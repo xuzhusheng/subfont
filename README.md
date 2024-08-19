@@ -1,5 +1,5 @@
 # web-font-utils
-Scrape characters' unicode range for fonts in your web page. So that you can create minimal subset of fonts for two-stage font loading.
+Scrape characters of fonts in your web page for two-stage font loading.
 
 ---
 ## Prerequisite
