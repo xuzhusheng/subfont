@@ -19,6 +19,9 @@ class Cli:
         :returns: Text groupped by font name and font style
         """
         ret = asyncio.run(scraper.scrape(url))
+        if self.__output:
+            with open(self.__output, "w") as f:
+                json.dump(ret, f)
         return json.dumps(ret, indent=2)
 
     def unicode(self, file = None, text = ""):
