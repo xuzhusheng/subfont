@@ -5,10 +5,7 @@ import asyncio
 from font_utils import get_metadata, subset_font
 from unicode import unicodes
 from css import fontface
-
 from pathlib import Path
-
-import unicode
 
 def dest_file(src, format):
     return Path(src).with_suffix(f".subset.{format}").name
@@ -39,7 +36,7 @@ class Cli:
     @staticmethod
     def unicodes(url, output=None):
         """
-        Find the characters of each font on the web page.
+        Find the characters of each font on the webpage.
 
         :param url: Page url.
         :param output: Output file.
