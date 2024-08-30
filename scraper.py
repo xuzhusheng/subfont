@@ -1,8 +1,6 @@
 import asyncio
 from playwright.async_api import async_playwright
-from itertools import product
-import re
-from utils import string_to_unicode_ranges
+from itertools import groupby
 
 JS_GET_TEXT_NODE = """
 root => {
@@ -31,28 +29,18 @@ async def scrape(url):
         await page.evaluate("document.fonts.ready")  # wait for  loading completed
         textNodes = await page.locator("body").evaluate(JS_GET_TEXT_NODE)
 
-    for node in textNodes:
-        node[0] = node[0].split(",")[0].replace('"', "")
+    def key_func(node):
+        return (node[0].split(",")[0].replace('"', ""), node[1])
+    
+    def text_node(key, group):
+        text = "".join([item[2] for item in group])
+        return {
+            "name": key[0],
+            "style": key[1],
+            "characters": "".join(sorted(set(text))),
+        }
 
-
-    fonts = set([node[0] for node in textNodes])
-    styles = set([node[1] for node in textNodes])
-
-    ret = []
-    for font, style in product(fonts, styles):
-        characters = set(
-            "".join([node[2] for node in textNodes if node[0] == font and node[1] == style])
-        )
-        text = re.sub("[\n ]", "", "".join(sorted(characters)))
-        text and ret.append(
-            {
-                "font": font,
-                "style": style,
-                "text": text,
-                "unicode": string_to_unicode_ranges(text),
-            }
-        )
-    return ret
+    return [text_node(k,g) for k, g in groupby(sorted(textNodes, key=key_func), key=key_func)]
 
 if __name__ == "__main__":
     URL = "http://localhost:5173"

@@ -1,6 +1,6 @@
 from itertools import groupby
 
-def string_to_unicode_ranges(s):
+def unicodes(s):
     l = list(set(s))
     codes = list(map(ord, l))
     codes.sort()
